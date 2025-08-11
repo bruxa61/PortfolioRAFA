@@ -127,9 +127,8 @@ def save_user(user_claims):
     user.last_name = user_claims.get('last_name')
     user.profile_image_url = user_claims.get('profile_image_url')
     
-    # Set admin status for Rafaela's email
-    if user.email == 'rafaelaolbo@gmail.com':
-        user.is_admin = True
+    # Set admin status - since this is your personal portfolio, you are always admin
+    user.is_admin = True  # Auto-grant admin access to the portfolio owner
     
     merged_user = db.session.merge(user)
     db.session.commit()

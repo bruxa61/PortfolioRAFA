@@ -471,6 +471,25 @@ def admin_simple_project_delete(project_id):
     
     return redirect(url_for('admin_simple_projects'))
 
+# Debug route to check admin status
+@app.route('/debug/user')
+def debug_user():
+    if not current_user.is_authenticated:
+        return jsonify({
+            'authenticated': False,
+            'message': 'User not logged in'
+        })
+    
+    return jsonify({
+        'authenticated': True,
+        'user_id': current_user.id,
+        'email': current_user.email,
+        'first_name': current_user.first_name,
+        'last_name': current_user.last_name,
+        'is_admin': current_user.is_admin,
+        'profile_image_url': current_user.profile_image_url
+    })
+
 # Error handlers
 @app.errorhandler(404)
 def not_found_error(error):
