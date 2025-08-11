@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+
+{% block title %}{% if project %}Editar Projeto{% else %}Novo Projeto{% endif %} - Rafaela Botelho{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 mt-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2">
+            <div class="admin-sidebar bg-light p-3 rounded">
+                <h5 class="mb-3">
+                    <i class="fas fa-cog me-2"></i>Administração
+                </h5>
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('admin_projects') }}">
+                            <i class="fas fa-project-diagram me-2"></i>Projetos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_about') }}">
+                            <i class="fas fa-user me-2"></i>Sobre Mim
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>{% if project %}Editar Projeto{% else %}Novo Projeto{% endif %}</h1>
+                <div class="admin-actions">
+                    <a href="{{ url_for('admin_projects') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Voltar
+                    </a>
+                </div>
+            </div>
+
+            <!-- Project Form -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('admin_save_project') }}" enctype="multipart/form-data">
+                        {% if project %}
+                            <input type="hidden" name="project_id" value="{{ project.id }}">
+                        {% endif %}
+                        
+                        <div class="row">
+                            <!-- Left Column -->
+                            <div class="col-lg-8">
+                                <!-- Basic Information -->
+                                <div class="mb-4">
+                                    <h5 class="mb-3">Informações Básicas</h5>
+                                    
+                                    <div class="mb-3">
+                                        <label for="title" class="form-label">Título do Projeto *</label>
+                                        <input type="text" class="form-control" id="title" name="title" 
+                                               value="{{ project.title if project else '' }}" required>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="description" class="form-label">Descrição Breve *</label>
+                                        <textarea class="form-control" id="description" name="description" 
+                                                  rows="3" placeholder="Uma descrição concisa do projeto..." required>{{ project.description if project else '' }}</textarea>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="content" class="form-label">Conteúdo Detalhado</label>
+                                        <textarea class="form-control" id="content" name="content" 
+                                                  rows="8" placeholder="Descreva detalhadamente o projeto, objetivos, desafios e soluções...">{{ project.content if project else '' }}</textarea>
+                                        <div class="form-text">Use HTML básico para formatação (p, strong, em, ul, li, etc.)</div>
+                                    </div>
+                                </div>
+
+                                <!-- Technologies -->
+                                <div class="mb-4">
+                                    <h5 class="mb-3">Tecnologias</h5>
+                                    <div class="mb-3">
+                                        <label for="technologies" class="form-label">Tecnologias Utilizadas</label>
+                                        <input type="text" class="form-control" id="technologies" name="technologies" 
+                                               value="{{ project.technologies if project else '' }}"
+                                               placeholder="HTML, CSS, JavaScript, React, Node.js">
+                                        <div class="form-text">Separe as tecnologias por vírgula</div>
+                                    </div>
+                                </div>
+
+                                <!-- Links -->
+                                <div class="mb-4">
+                                    <h5 class="mb-3">Links Externos</h5>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="demo_url" class="form-label">URL da Demo</label>
+                                                <input type="url" class="form-control" id="demo_url" name="demo_url" 
+                                                       value="{{ project.demo_url if project else '' }}"
+                                                       placeholder="https://exemplo.com">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="github_url" class="form-label">URL do GitHub</label>
+                                                <input type="url" class="form-control" id="github_url" name="github_url" 
+                                                       value="{{ project.github_url if project else '' }}"
+                                                       placeholder="https://github.com/usuario/repositorio">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Column -->
+                            <div class="col-lg-4">
+                                <!-- Image Upload -->
+                                <div class="mb-4">
+                                    <h5 class="mb-3">Imagem do Projeto</h5>
+                                    
+                                    {% if project and project.image_url %}
+                                        <div class="current-image mb-3">
+                                            <img src="{{ project.image_url }}" alt="Imagem atual" 
+                                                 class="img-fluid rounded border">
+                                            <small class="text-muted d-block mt-1">Imagem atual</small>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <div class="mb-3">
+                                        <label for="image" class="form-label">{% if project and project.image_url %}Nova Imagem{% else %}Imagem{% endif %}</label>
+                                        <input type="file" class="form-control" id="image" name="image" 
+                                               accept="image/*">
+                                        <div class="form-text">Formatos aceitos: PNG, JPG, JPEG, GIF, SVG</div>
+                                    </div>
+                                </div>
+
+                                <!-- Category -->
+                                <div class="mb-4">
+                                    <h5 class="mb-3">Categorização</h5>
+                                    
+                                    <div class="mb-3">
+                                        <label for="category_id" class="form-label">Categoria</label>
+                                        <select class="form-select" id="category_id" name="category_id">
+                                            <option value="">Selecione uma categoria</option>
+                                            {% for category in categories %}
+                                                <option value="{{ category.id }}" 
+                                                        {% if project and project.category_id == category.id %}selected{% endif %}>
+                                                    {{ category.name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Status and Options -->
+                                <div class="mb-4">
+                                    <h5 class="mb-3">Configurações</h5>
+                                    
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="is_published" 
+                                               name="is_published" {% if project and project.is_published %}checked{% endif %}>
+                                        <label class="form-check-label" for="is_published">
+                                            <strong>Publicar projeto</strong>
+                                            <small class="text-muted d-block">O projeto será visível para visitantes</small>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="is_featured" 
+                                               name="is_featured" {% if project and project.is_featured %}checked{% endif %}>
+                                        <label class="form-check-label" for="is_featured">
+                                            <strong>Projeto em destaque</strong>
+                                            <small class="text-muted d-block">Aparecerá na seção de destaques</small>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Project Stats (if editing) -->
+                                {% if project %}
+                                <div class="mb-4">
+                                    <h5 class="mb-3">Estatísticas</h5>
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span><i class="fas fa-heart text-danger me-1"></i>Curtidas</span>
+                                                <span class="fw-bold">{{ project.likes_count }}</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span><i class="fas fa-comment text-primary me-1"></i>Comentários</span>
+                                                <span class="fw-bold">{{ project.comments_count }}</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <span><i class="fas fa-eye text-success me-1"></i>Visualizações</span>
+                                                <span class="fw-bold">{{ project.view_count }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="row">
+                            <div class="col-12">
+                                <hr class="my-4">
+                                <div class="d-flex justify-content-between">
+                                    <a href="{{ url_for('admin_projects') }}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-times me-2"></i>Cancelar
+                                    </a>
+                                    <div>
+                                        {% if project %}
+                                            <button type="submit" class="btn btn-success me-2">
+                                                <i class="fas fa-save me-2"></i>Salvar Alterações
+                                            </button>
+                                            {% if project.is_published %}
+                                                <a href="{{ url_for('project_detail', slug=project.slug) }}" 
+                                                   target="_blank" class="btn btn-outline-primary">
+                                                    <i class="fas fa-eye me-2"></i>Ver Projeto
+                                                </a>
+                                            {% endif %}
+                                        {% else %}
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-plus me-2"></i>Criar Projeto
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Preview image upload
+document.getElementById('image').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // Create or update preview
+            let preview = document.querySelector('.image-preview');
+            if (!preview) {
+                preview = document.createElement('div');
+                preview.className = 'image-preview mt-2';
+                e.target.parentNode.appendChild(preview);
+            }
+            preview.innerHTML = `
+                <img src="${e.target.result}" alt="Preview" 
+                     class="img-fluid rounded border" style="max-height: 200px;">
+                <small class="text-muted d-block mt-1">Preview da nova imagem</small>
+            `;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Auto-generate slug preview (optional)
+document.getElementById('title').addEventListener('input', function(e) {
+    const title = e.target.value;
+    // Simple slug generation for preview
+    const slug = title.toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/[\s]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    
+    // Show slug preview (you could add this to the UI if desired)
+    console.log('Generated slug:', slug);
+});
+</script>
+{% endblock %}

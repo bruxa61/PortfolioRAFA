@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Rafaela de Oliveira Botelho - Desenvolvedora de Sistemas{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <h1 class="display-4 fw-bold mb-3">
+                        Rafaela de Oliveira Botelho
+                    </h1>
+                    <h2 class="h3 text-primary mb-4">Desenvolvedora de Sistemas</h2>
+                    <p class="lead mb-4">
+                        {% if about and about.content %}
+                            {{ about.content }}
+                        {% else %}
+                            Apaixonada por tecnologia e formada em Análise e Desenvolvimento de Sistemas pelo SENAI
+                            "Morvan Figueiredo", busco constantemente aprimorar minhas habilidades na área. Meu
+                            portfólio demonstra como realizo a união entre a lógica da programação com a criatividade
+                            do design, resultando em projetos visualmente atraentes e com foco em conversão.
+                        {% endif %}
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="{{ url_for('projects') }}" class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-eye me-2"></i>Ver Projetos
+                        </a>
+                        {% if about and about.resume_url %}
+                            <a href="{{ about.resume_url }}" class="btn btn-outline-primary btn-lg" target="_blank">
+                                <i class="fas fa-download me-2"></i>Currículo
+                            </a>
+                        {% else %}
+                            <a href="https://drive.google.com/drive/folders/1ILBWKdl1zsjZ0jmk7LkG6MFQXvip7ns4?usp=sharing" 
+                               class="btn btn-outline-primary btn-lg" target="_blank">
+                                <i class="fas fa-download me-2"></i>Currículo
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="hero-image">
+                    {% if about and about.profile_image %}
+                        <img src="{{ about.profile_image }}" alt="Rafaela de Oliveira Botelho" class="img-fluid rounded-circle profile-img">
+                    {% else %}
+                        <div class="profile-placeholder">
+                            <i class="fas fa-user-circle display-1 text-primary"></i>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Skills Section -->
+<section class="skills-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Habilidades & Ferramentas</h2>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title mb-3">
+                            <i class="fas fa-code text-primary me-2"></i>Desenvolvimento
+                        </h4>
+                        <div class="skill-tags">
+                            <span class="badge bg-primary me-2 mb-2">HTML5</span>
+                            <span class="badge bg-primary me-2 mb-2">CSS3</span>
+                            <span class="badge bg-primary me-2 mb-2">JavaScript</span>
+                            <span class="badge bg-primary me-2 mb-2">Bootstrap</span>
+                            <span class="badge bg-primary me-2 mb-2">Node.js</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title mb-3">
+                            <i class="fas fa-tools text-primary me-2"></i>Ferramentas
+                        </h4>
+                        <div class="skill-tags">
+                            <span class="badge bg-secondary me-2 mb-2">Git</span>
+                            <span class="badge bg-secondary me-2 mb-2">GitHub</span>
+                            <span class="badge bg-secondary me-2 mb-2">Figma</span>
+                            <span class="badge bg-secondary me-2 mb-2">Notion</span>
+                            <span class="badge bg-secondary me-2 mb-2">AWS</span>
+                            <span class="badge bg-secondary me-2 mb-2">Google Cloud</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Projects Section -->
+{% if featured_projects %}
+<section class="featured-projects py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Projetos em Destaque</h2>
+        <div class="row">
+            {% for project in featured_projects %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card project-card h-100 border-0 shadow-sm">
+                    {% if project.image_url %}
+                        <img src="{{ project.image_url }}" class="card-img-top project-img" alt="{{ project.title }}">
+                    {% else %}
+                        <div class="card-img-top project-placeholder d-flex align-items-center justify-content-center">
+                            <i class="fas fa-project-diagram display-4 text-muted"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ project.title }}</h5>
+                        <p class="card-text text-muted flex-grow-1">{{ project.description }}</p>
+                        <div class="project-stats mb-3">
+                            <small class="text-muted">
+                                <i class="fas fa-heart me-1"></i>{{ project.likes_count }}
+                                <i class="fas fa-comment ms-3 me-1"></i>{{ project.comments_count }}
+                                <i class="fas fa-eye ms-3 me-1"></i>{{ project.view_count }}
+                            </small>
+                        </div>
+                        <a href="{{ url_for('project_detail', slug=project.slug) }}" class="btn btn-primary">
+                            Ver Projeto <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ url_for('projects') }}" class="btn btn-outline-primary btn-lg">
+                Ver Todos os Projetos <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Recent Projects Section -->
+{% if recent_projects %}
+<section class="recent-projects py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Projetos Recentes</h2>
+        <div class="row">
+            {% for project in recent_projects %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card project-card h-100 border-0 shadow-sm">
+                    {% if project.image_url %}
+                        <img src="{{ project.image_url }}" class="card-img-top project-img" alt="{{ project.title }}">
+                    {% else %}
+                        <div class="card-img-top project-placeholder d-flex align-items-center justify-content-center">
+                            <i class="fas fa-project-diagram display-4 text-muted"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ project.title }}</h5>
+                        <p class="card-text text-muted flex-grow-1">{{ project.description }}</p>
+                        <div class="project-stats mb-3">
+                            <small class="text-muted">
+                                <i class="fas fa-heart me-1"></i>{{ project.likes_count }}
+                                <i class="fas fa-comment ms-3 me-1"></i>{{ project.comments_count }}
+                            </small>
+                        </div>
+                        <a href="{{ url_for('project_detail', slug=project.slug) }}" class="btn btn-primary">
+                            Ver Projeto <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Call to Action -->
+<section class="cta-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="mb-3">Vamos trabalhar juntos?</h2>
+                <p class="lead mb-4">
+                    Estou sempre aberta a novos desafios e oportunidades de colaboração.
+                    Entre em contato para discutirmos seu próximo projeto!
+                </p>
+                <div class="contact-buttons">
+                    <a href="mailto:rafaelaolbo@gmail.com" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-envelope me-2"></i>Enviar Email
+                    </a>
+                    <a href="https://wa.me/5511986261266" class="btn btn-success btn-lg">
+                        <i class="fab fa-whatsapp me-2"></i>WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

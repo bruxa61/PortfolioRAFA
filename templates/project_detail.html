@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }} - Rafaela Botelho{% endblock %}
+
+{% block meta %}
+<meta name="description" content="{{ project.description }}">
+<meta property="og:title" content="{{ project.title }}">
+<meta property="og:description" content="{{ project.description }}">
+{% if project.image_url %}
+<meta property="og:image" content="{{ request.url_root.rstrip('/') }}{{ project.image_url }}">
+{% endif %}
+<meta property="og:url" content="{{ request.url }}">
+<meta property="og:type" content="article">
+{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-4">
+    <!-- Project Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Início</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('projects') }}">Projetos</a></li>
+                    <li class="breadcrumb-item active">{{ project.title }}</li>
+                </ol>
+            </nav>
+            
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <h1 class="display-5 mb-2">{{ project.title }}</h1>
+                    {% if project.category %}
+                        <span class="badge bg-primary fs-6 mb-2">
+                            <i class="fas fa-tag me-1"></i>{{ project.category.name }}
+                        </span>
+                    {% endif %}
+                </div>
+                {% if project.is_featured %}
+                    <span class="badge bg-warning text-dark fs-6">
+                        <i class="fas fa-star me-1"></i>Em Destaque
+                    </span>
+                {% endif %}
+            </div>
+            
+            <p class="lead text-muted">{{ project.description }}</p>
+        </div>
+    </div>
+
+    <!-- Project Image -->
+    {% if project.image_url %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <img src="{{ project.image_url }}" alt="{{ project.title }}" class="img-fluid rounded shadow project-detail-img">
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Project Info & Actions -->
+    <div class="row mb-4">
+        <div class="col-lg-8">
+            <!-- Project Content -->
+            {% if project.content %}
+            <div class="project-content">
+                <h3>Sobre o Projeto</h3>
+                <div class="content-html">
+                    {{ project.content|safe }}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Technologies -->
+            {% if project.technologies %}
+            <div class="technologies-section mt-4">
+                <h4>Tecnologias Utilizadas</h4>
+                <div class="technologies">
+                    {% for tech in project.technologies.split(',') %}
+                        <span class="badge bg-light text-dark me-2 mb-2 fs-6">{{ tech.strip() }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Project Actions -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Ações</h5>
+                    
+                    <!-- Like Button -->
+                    <div class="d-grid gap-2 mb-3">
+                        {% if current_user.is_authenticated %}
+                            <button class="btn {{ 'btn-danger' if user_liked else 'btn-outline-danger' }} like-btn" 
+                                    data-project-id="{{ project.id }}">
+                                <i class="fas fa-heart me-2"></i>
+                                <span class="like-text">{{ 'Descurtir' if user_liked else 'Curtir' }}</span>
+                                (<span class="likes-count">{{ project.likes_count }}</span>)
+                            </button>
+                        {% else %}
+                            <a href="{{ url_for('replit_auth.login') }}" class="btn btn-outline-danger">
+                                <i class="fas fa-heart me-2"></i>Curtir ({{ project.likes_count }})
+                            </a>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- External Links -->
+                    {% if project.demo_url %}
+                        <div class="d-grid gap-2 mb-2">
+                            <a href="{{ project.demo_url }}" target="_blank" class="btn btn-success">
+                                <i class="fas fa-external-link-alt me-2"></i>Ver Demo
+                            </a>
+                        </div>
+                    {% endif %}
+                    
+                    {% if project.github_url %}
+                        <div class="d-grid gap-2 mb-2">
+                            <a href="{{ project.github_url }}" target="_blank" class="btn btn-dark">
+                                <i class="fab fa-github me-2"></i>Ver Código
+                            </a>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Share Button -->
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('share_linkedin', slug=project.slug) }}" target="_blank" class="btn btn-primary">
+                            <i class="fab fa-linkedin me-2"></i>Compartilhar
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Project Stats -->
+            <div class="card border-0 shadow-sm mt-3">
+                <div class="card-body">
+                    <h6 class="card-title">Estatísticas</h6>
+                    <div class="stats">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span><i class="fas fa-heart text-danger me-2"></i>Curtidas</span>
+                            <span class="fw-bold likes-count">{{ project.likes_count }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span><i class="fas fa-comment text-primary me-2"></i>Comentários</span>
+                            <span class="fw-bold">{{ project.comments_count }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span><i class="fas fa-eye text-success me-2"></i>Visualizações</span>
+                            <span class="fw-bold">{{ project.view_count }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="comments-section">
+                <h3>Comentários ({{ project.comments_count }})</h3>
+                
+                <!-- Add Comment Form -->
+                {% if current_user.is_authenticated %}
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('add_comment', project_id=project.id) }}">
+                            <div class="mb-3">
+                                <label for="content" class="form-label">Deixe seu comentário</label>
+                                <textarea class="form-control" id="content" name="content" rows="3" 
+                                        placeholder="Compartilhe sua opinião sobre este projeto..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-comment me-2"></i>Comentar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <a href="{{ url_for('replit_auth.login') }}" class="alert-link">Faça login</a> para comentar neste projeto.
+                </div>
+                {% endif %}
+                
+                <!-- Comments List -->
+                {% if comments %}
+                    {% for comment in comments %}
+                    <div class="card border-0 shadow-sm mb-3">
+                        <div class="card-body">
+                            <div class="d-flex align-items-start">
+                                {% if comment.user.profile_image_url %}
+                                    <img src="{{ comment.user.profile_image_url }}" 
+                                         alt="{{ comment.user.first_name or 'Usuário' }}" 
+                                         class="rounded-circle me-3" width="40" height="40" 
+                                         style="object-fit: cover;">
+                                {% else %}
+                                    <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                         style="width: 40px; height: 40px;">
+                                        <i class="fas fa-user text-white"></i>
+                                    </div>
+                                {% endif %}
+                                
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="mb-0">{{ comment.user.first_name or 'Usuário' }}</h6>
+                                        <small class="text-muted">{{ comment.created_at.strftime('%d/%m/%Y às %H:%M') }}</small>
+                                    </div>
+                                    <p class="mb-0">{{ comment.content }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-comments display-4 text-muted mb-3"></i>
+                        <p class="text-muted">Seja o primeiro a comentar neste projeto!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Like functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const likeBtn = document.querySelector('.like-btn');
+    if (likeBtn) {
+        likeBtn.addEventListener('click', function() {
+            const projectId = this.dataset.projectId;
+            
+            fetch(`/projeto/${projectId}/curtir`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const likeText = this.querySelector('.like-text');
+                    const likesCount = document.querySelectorAll('.likes-count');
+                    
+                    if (data.liked) {
+                        this.classList.remove('btn-outline-danger');
+                        this.classList.add('btn-danger');
+                        likeText.textContent = 'Descurtir';
+                    } else {
+                        this.classList.remove('btn-danger');
+                        this.classList.add('btn-outline-danger');
+                        likeText.textContent = 'Curtir';
+                    }
+                    
+                    likesCount.forEach(count => {
+                        count.textContent = data.likes_count;
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

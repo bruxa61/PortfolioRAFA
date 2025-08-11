@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}Sobre - Rafaela Botelho{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-5">
+                {% if about and about.profile_image %}
+                    <img src="{{ about.profile_image }}" alt="Rafaela de Oliveira Botelho" 
+                         class="rounded-circle mb-4 profile-img-large">
+                {% else %}
+                    <div class="profile-placeholder-large mx-auto mb-4">
+                        <i class="fas fa-user-circle display-1 text-primary"></i>
+                    </div>
+                {% endif %}
+                <h1 class="display-4 mb-3">{{ about.title if about and about.title else 'Sobre Mim' }}</h1>
+            </div>
+
+            <!-- About Content -->
+            <div class="about-content mb-5">
+                {% if about and about.content %}
+                    <div class="lead">
+                        {{ about.content|safe }}
+                    </div>
+                {% else %}
+                    <p class="lead">
+                        Apaixonada por tecnologia e formada em Análise e Desenvolvimento de Sistemas pelo SENAI
+                        "Morvan Figueiredo", busco constantemente aprimorar minhas habilidades na área. Meu
+                        portfólio demonstra como realizo a união entre a lógica da programação com a criatividade
+                        do design, resultando em projetos visualmente atraentes e com foco em conversão.
+                    </p>
+                    <p class="lead">
+                        Tenho um forte interesse por front-end e design, o que me permite criar peças eficazes 
+                        e com ótima experiência para o usuário.
+                    </p>
+                {% endif %}
+            </div>
+
+            <!-- Skills Section -->
+            <div class="skills-section mb-5">
+                <h2 class="mb-4">Habilidades Técnicas</h2>
+                
+                <!-- Product Owner Skills -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title">
+                            <i class="fas fa-project-diagram text-primary me-2"></i>
+                            Product Owner & Metodologias Ágeis
+                        </h4>
+                        <p class="card-text">
+                            Atuação como Product Owner (P.O.) em equipe de desenvolvimento de sistemas, utilizando a
+                            metodologia Scrum para gestão de projetos e condução de sprints.
+                        </p>
+                        <p class="card-text">
+                            Experiência com práticas ágeis de comunicação, incluindo daily scrums e planejamento de
+                            sprints, utilizando ferramentas de colaboração como Notion e Miro.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Design & UX Skills -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title">
+                            <i class="fas fa-palette text-primary me-2"></i>
+                            Design & UX/UI
+                        </h4>
+                        <p class="card-text">
+                            Proficiência em Figma para prototipagem de alta fidelidade, com conhecimento em teoria das cores
+                            e foco na experiência do usuário. Interesse em desenvolvimento front-end para implementação de
+                            interfaces intuitivas e eficazes.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Technical Skills -->
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="fas fa-code text-primary me-2"></i>Desenvolvimento
+                                </h5>
+                                <div class="skill-tags">
+                                    <span class="badge bg-primary me-2 mb-2">HTML5</span>
+                                    <span class="badge bg-primary me-2 mb-2">CSS3</span>
+                                    <span class="badge bg-primary me-2 mb-2">JavaScript</span>
+                                    <span class="badge bg-primary me-2 mb-2">Bootstrap</span>
+                                    <span class="badge bg-primary me-2 mb-2">Node.js</span>
+                                    <span class="badge bg-primary me-2 mb-2">Microsoft SQL</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="fas fa-tools text-primary me-2"></i>Ferramentas & Cloud
+                                </h5>
+                                <div class="skill-tags">
+                                    <span class="badge bg-secondary me-2 mb-2">Git</span>
+                                    <span class="badge bg-secondary me-2 mb-2">GitHub</span>
+                                    <span class="badge bg-secondary me-2 mb-2">Figma</span>
+                                    <span class="badge bg-secondary me-2 mb-2">Notion</span>
+                                    <span class="badge bg-secondary me-2 mb-2">Trello</span>
+                                    <span class="badge bg-secondary me-2 mb-2">AWS</span>
+                                    <span class="badge bg-secondary me-2 mb-2">Google Cloud</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Certificates Section -->
+            <div class="certificates-section mb-5">
+                <h2 class="mb-4">Certificações</h2>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body text-center">
+                                <i class="fab fa-google display-4 text-primary mb-3"></i>
+                                <h5 class="card-title">Google Cloud</h5>
+                                <a href="https://www.cloudskillsboost.google/public_profiles/8d646e14-fac7-4873-a1d5-b3df0097f336" 
+                                   target="_blank" class="btn btn-outline-primary btn-sm">
+                                    Ver Certificados
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body text-center">
+                                <i class="fab fa-aws display-4 text-warning mb-3"></i>
+                                <h5 class="card-title">Amazon Web Services</h5>
+                                <a href="https://www.credly.com/badges/ba8d195d-3d1f-40ea-8a50-c350cd039bfb/public_url" 
+                                   target="_blank" class="btn btn-outline-primary btn-sm">
+                                    Ver Certificado
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Section -->
+            <div class="contact-section">
+                <h2 class="mb-4 text-center">Vamos conversar?</h2>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="contact-item">
+                                            <i class="fas fa-envelope display-6 text-primary mb-3"></i>
+                                            <h5>Email</h5>
+                                            <a href="mailto:{{ about.contact_email if about and about.contact_email else 'rafaelaolbo@gmail.com' }}" 
+                                               class="btn btn-outline-primary">
+                                                {{ about.contact_email if about and about.contact_email else 'rafaelaolbo@gmail.com' }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="contact-item">
+                                            <i class="fab fa-whatsapp display-6 text-success mb-3"></i>
+                                            <h5>WhatsApp</h5>
+                                            <a href="{{ about.whatsapp_url if about and about.whatsapp_url else 'https://wa.me/5511986261266' }}" 
+                                               target="_blank" class="btn btn-outline-success">
+                                                (11) 98626-1266
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <hr class="my-4">
+                                
+                                <div class="text-center">
+                                    <h5 class="mb-3">Redes Sociais</h5>
+                                    <div class="social-links">
+                                        <a href="{{ about.linkedin_url if about and about.linkedin_url else 'https://www.linkedin.com/in/rafaela-botelho-76a4a72b0/' }}" 
+                                           target="_blank" class="btn btn-primary me-2">
+                                            <i class="fab fa-linkedin-in"></i> LinkedIn
+                                        </a>
+                                        <a href="{{ about.github_url if about and about.github_url else 'https://github.com/bruxa61' }}" 
+                                           target="_blank" class="btn btn-dark me-2">
+                                            <i class="fab fa-github"></i> GitHub
+                                        </a>
+                                        <a href="{{ about.instagram_url if about and about.instagram_url else 'https://www.instagram.com/r.afita_/' }}" 
+                                           target="_blank" class="btn btn-outline-danger">
+                                            <i class="fab fa-instagram"></i> Instagram
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

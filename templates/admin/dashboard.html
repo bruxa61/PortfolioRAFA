@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+
+{% block title %}Painel Administrativo - Rafaela Botelho{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 mt-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2">
+            <div class="admin-sidebar bg-light p-3 rounded">
+                <h5 class="mb-3">
+                    <i class="fas fa-cog me-2"></i>Administração
+                </h5>
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('admin_dashboard') }}">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_projects') }}">
+                            <i class="fas fa-project-diagram me-2"></i>Projetos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_about') }}">
+                            <i class="fas fa-user me-2"></i>Sobre Mim
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Dashboard</h1>
+                <div class="admin-actions">
+                    <a href="{{ url_for('admin_new_project') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Novo Projeto
+                    </a>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="row mb-4">
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Total de Projetos
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_projects }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-project-diagram fa-2x text-primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        Projetos Publicados
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ published_projects }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-check-circle fa-2x text-success"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                        Rascunhos
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ draft_projects }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-edit fa-2x text-warning"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                        Total de Curtidas
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_likes }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-heart fa-2x text-danger"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Stats -->
+            <div class="row mb-4">
+                <div class="col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                        Total de Comentários
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_comments }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-comment fa-2x text-info"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
+                                        Usuários Registrados
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_users }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-users fa-2x text-secondary"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="row">
+                <!-- Recent Projects -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white">
+                            <h6 class="m-0 font-weight-bold text-primary">
+                                <i class="fas fa-project-diagram me-2"></i>Projetos Recentes
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            {% if recent_projects %}
+                                {% for project in recent_projects %}
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">{{ project.title }}</h6>
+                                        <small class="text-muted">
+                                            <i class="fas fa-heart me-1"></i>{{ project.likes_count }}
+                                            <i class="fas fa-comment ms-2 me-1"></i>{{ project.comments_count }}
+                                            <span class="ms-2">{{ project.created_at.strftime('%d/%m/%Y') }}</span>
+                                        </small>
+                                    </div>
+                                    <div class="project-status">
+                                        {% if project.is_published %}
+                                            <span class="badge bg-success">Publicado</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">Rascunho</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="text-muted">Nenhum projeto encontrado.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Comments -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white">
+                            <h6 class="m-0 font-weight-bold text-primary">
+                                <i class="fas fa-comment me-2"></i>Comentários Recentes
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            {% if recent_comments %}
+                                {% for comment in recent_comments %}
+                                <div class="d-flex align-items-start mb-3">
+                                    {% if comment.user.profile_image_url %}
+                                        <img src="{{ comment.user.profile_image_url }}" 
+                                             class="rounded-circle me-3" width="32" height="32" 
+                                             style="object-fit: cover;">
+                                    {% else %}
+                                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                             style="width: 32px; height: 32px;">
+                                            <i class="fas fa-user text-white"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">{{ comment.user.first_name or 'Usuário' }}</h6>
+                                        <p class="mb-1 small">{{ comment.content[:50] }}{% if comment.content|length > 50 %}...{% endif %}</p>
+                                        <small class="text-muted">
+                                            {{ comment.project.title }} - {{ comment.created_at.strftime('%d/%m/%Y') }}
+                                        </small>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="text-muted">Nenhum comentário encontrado.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications -->
+            {% if unread_notifications %}
+            <div class="row">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white">
+                            <h6 class="m-0 font-weight-bold text-primary">
+                                <i class="fas fa-bell me-2"></i>Notificações Não Lidas
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            {% for notification in unread_notifications %}
+                            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                <strong>{{ notification.title }}</strong>
+                                <p class="mb-1">{{ notification.message }}</p>
+                                <small class="text-muted">{{ notification.created_at.strftime('%d/%m/%Y às %H:%M') }}</small>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" 
+                                        onclick="markNotificationRead({{ notification.id }})"></button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function markNotificationRead(notificationId) {
+    fetch(`/admin/notificacao/${notificationId}/ler`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('Notification marked as read');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+</script>
+{% endblock %}

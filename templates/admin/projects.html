@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block title %}Gerenciar Projetos - Rafaela Botelho{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 mt-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2">
+            <div class="admin-sidebar bg-light p-3 rounded">
+                <h5 class="mb-3">
+                    <i class="fas fa-cog me-2"></i>Administração
+                </h5>
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('admin_projects') }}">
+                            <i class="fas fa-project-diagram me-2"></i>Projetos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_about') }}">
+                            <i class="fas fa-user me-2"></i>Sobre Mim
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Gerenciar Projetos</h1>
+                <div class="admin-actions">
+                    <a href="{{ url_for('admin_new_project') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Novo Projeto
+                    </a>
+                </div>
+            </div>
+
+            <!-- Projects Table -->
+            {% if projects.items %}
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Projeto</th>
+                                    <th>Categoria</th>
+                                    <th>Status</th>
+                                    <th>Estatísticas</th>
+                                    <th>Data</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for project in projects.items %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            {% if project.image_url %}
+                                                <img src="{{ project.image_url }}" 
+                                                     class="rounded me-3" width="50" height="50" 
+                                                     style="object-fit: cover;">
+                                            {% else %}
+                                                <div class="bg-light border rounded me-3 d-flex align-items-center justify-content-center"
+                                                     style="width: 50px; height: 50px;">
+                                                    <i class="fas fa-project-diagram text-muted"></i>
+                                                </div>
+                                            {% endif %}
+                                            <div>
+                                                <h6 class="mb-1">{{ project.title }}</h6>
+                                                <small class="text-muted">{{ project.description[:50] }}{% if project.description|length > 50 %}...{% endif %}</small>
+                                                {% if project.is_featured %}
+                                                    <br><span class="badge bg-warning text-dark">
+                                                        <i class="fas fa-star"></i> Destaque
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if project.category %}
+                                            <span class="badge bg-info">{{ project.category.name }}</span>
+                                        {% else %}
+                                            <span class="text-muted">Sem categoria</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if project.is_published %}
+                                            <span class="badge bg-success">Publicado</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">Rascunho</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            <i class="fas fa-heart text-danger me-1"></i>{{ project.likes_count }}
+                                            <i class="fas fa-comment text-primary ms-2 me-1"></i>{{ project.comments_count }}
+                                            <i class="fas fa-eye text-success ms-2 me-1"></i>{{ project.view_count }}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">{{ project.created_at.strftime('%d/%m/%Y') }}</small>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            {% if project.is_published %}
+                                                <a href="{{ url_for('project_detail', slug=project.slug) }}" 
+                                                   target="_blank" class="btn btn-sm btn-outline-primary" 
+                                                   title="Ver projeto">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            {% endif %}
+                                            <a href="{{ url_for('admin_edit_project', project_id=project.id) }}" 
+                                               class="btn btn-sm btn-outline-secondary" title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                    title="Excluir" onclick="confirmDelete({{ project.id }}, '{{ project.title }}')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            {% if projects.pages > 1 %}
+            <div class="d-flex justify-content-center mt-4">
+                <nav aria-label="Navegação de projetos">
+                    <ul class="pagination">
+                        {% if projects.has_prev %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin_projects', page=projects.prev_num) }}">
+                                    <i class="fas fa-chevron-left"></i> Anterior
+                                </a>
+                            </li>
+                        {% endif %}
+                        
+                        {% for page_num in projects.iter_pages() %}
+                            {% if page_num %}
+                                {% if page_num != projects.page %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for('admin_projects', page=page_num) }}">{{ page_num }}</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ page_num }}</span>
+                                    </li>
+                                {% endif %}
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if projects.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin_projects', page=projects.next_num) }}">
+                                    Próxima <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+
+            {% else %}
+            <!-- Empty State -->
+            <div class="text-center py-5">
+                <i class="fas fa-project-diagram display-1 text-muted mb-3"></i>
+                <h3 class="text-muted">Nenhum projeto encontrado</h3>
+                <p class="text-muted">Comece criando seu primeiro projeto!</p>
+                <a href="{{ url_for('admin_new_project') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Criar Primeiro Projeto
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Exclusão</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir o projeto "<span id="projectTitle"></span>"?</p>
+                <p class="text-warning"><strong>Esta ação não pode ser desfeita.</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-2"></i>Excluir
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function confirmDelete(projectId, projectTitle) {
+    document.getElementById('projectTitle').textContent = projectTitle;
+    document.getElementById('deleteForm').action = `/admin/projeto/${projectId}/excluir`;
+    
+    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    modal.show();
+}
+</script>
+{% endblock %}

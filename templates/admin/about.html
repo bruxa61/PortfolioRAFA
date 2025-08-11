@@ -1,0 +1,285 @@
+{% extends "base.html" %}
+
+{% block title %}Gerenciar Sobre Mim - Rafaela Botelho{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 mt-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2">
+            <div class="admin-sidebar bg-light p-3 rounded">
+                <h5 class="mb-3">
+                    <i class="fas fa-cog me-2"></i>Administração
+                </h5>
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_projects') }}">
+                            <i class="fas fa-project-diagram me-2"></i>Projetos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('admin_about') }}">
+                            <i class="fas fa-user me-2"></i>Sobre Mim
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Gerenciar Sobre Mim</h1>
+                <div class="admin-actions">
+                    <a href="{{ url_for('about') }}" target="_blank" class="btn btn-outline-primary">
+                        <i class="fas fa-eye me-2"></i>Ver Página
+                    </a>
+                </div>
+            </div>
+
+            <!-- About Form -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('admin_save_about') }}" enctype="multipart/form-data">
+                        <div class="row">
+                            <!-- Left Column -->
+                            <div class="col-lg-8">
+                                <!-- Basic Information -->
+                                <div class="mb-4">
+                                    <h5 class="mb-3">Informações Pessoais</h5>
+                                    
+                                    <div class="mb-3">
+                                        <label for="title" class="form-label">Título da Página</label>
+                                        <input type="text" class="form-control" id="title" name="title" 
+                                               value="{{ about.title if about else 'Sobre Mim' }}">
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="content" class="form-label">Sobre Você</label>
+                                        <textarea class="form-control" id="content" name="content" 
+                                                  rows="8" placeholder="Conte sua história, formação, paixões...">{{ about.content if about else '' }}</textarea>
+                                        <div class="form-text">Use HTML básico para formatação (p, strong, em, ul, li, etc.)</div>
+                                    </div>
+                                </div>
+
+                                <!-- Skills -->
+                                <div class="mb-4">
+                                    <h5 class="mb-3">Habilidades</h5>
+                                    <div class="mb-3">
+                                        <label for="skills" class="form-label">Suas Habilidades</label>
+                                        <textarea class="form-control" id="skills" name="skills" 
+                                                  rows="4" placeholder="Liste suas principais habilidades...">{{ about.skills if about else '' }}</textarea>
+                                        <div class="form-text">Descreva suas competências técnicas e soft skills</div>
+                                    </div>
+                                </div>
+
+                                <!-- Contact Information -->
+                                <div class="mb-4">
+                                    <h5 class="mb-3">Informações de Contato</h5>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="contact_email" class="form-label">Email</label>
+                                                <input type="email" class="form-control" id="contact_email" name="contact_email" 
+                                                       value="{{ about.contact_email if about else 'rafaelaolbo@gmail.com' }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="contact_phone" class="form-label">Telefone</label>
+                                                <input type="tel" class="form-control" id="contact_phone" name="contact_phone" 
+                                                       value="{{ about.contact_phone if about else '(11) 98626-1266' }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Social Media Links -->
+                                <div class="mb-4">
+                                    <h5 class="mb-3">Redes Sociais</h5>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="linkedin_url" class="form-label">
+                                                    <i class="fab fa-linkedin text-primary me-2"></i>LinkedIn
+                                                </label>
+                                                <input type="url" class="form-control" id="linkedin_url" name="linkedin_url" 
+                                                       value="{{ about.linkedin_url if about else 'https://www.linkedin.com/in/rafaela-botelho-76a4a72b0/' }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="github_url" class="form-label">
+                                                    <i class="fab fa-github text-dark me-2"></i>GitHub
+                                                </label>
+                                                <input type="url" class="form-control" id="github_url" name="github_url" 
+                                                       value="{{ about.github_url if about else 'https://github.com/bruxa61' }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="instagram_url" class="form-label">
+                                                    <i class="fab fa-instagram text-danger me-2"></i>Instagram
+                                                </label>
+                                                <input type="url" class="form-control" id="instagram_url" name="instagram_url" 
+                                                       value="{{ about.instagram_url if about else 'https://www.instagram.com/r.afita_/' }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="whatsapp_url" class="form-label">
+                                                    <i class="fab fa-whatsapp text-success me-2"></i>WhatsApp
+                                                </label>
+                                                <input type="url" class="form-control" id="whatsapp_url" name="whatsapp_url" 
+                                                       value="{{ about.whatsapp_url if about else 'https://wa.me/5511986261266' }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Resume -->
+                                <div class="mb-4">
+                                    <h5 class="mb-3">Currículo</h5>
+                                    <div class="mb-3">
+                                        <label for="resume_url" class="form-label">Link do Currículo</label>
+                                        <input type="url" class="form-control" id="resume_url" name="resume_url" 
+                                               value="{{ about.resume_url if about else 'https://drive.google.com/drive/folders/1ILBWKdl1zsjZ0jmk7LkG6MFQXvip7ns4?usp=sharing' }}">
+                                        <div class="form-text">Link para visualização ou download do seu CV</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Column -->
+                            <div class="col-lg-4">
+                                <!-- Profile Image -->
+                                <div class="mb-4">
+                                    <h5 class="mb-3">Foto de Perfil</h5>
+                                    
+                                    {% if about and about.profile_image %}
+                                        <div class="current-image mb-3 text-center">
+                                            <img src="{{ about.profile_image }}" alt="Foto atual" 
+                                                 class="rounded-circle border" width="150" height="150" 
+                                                 style="object-fit: cover;">
+                                            <small class="text-muted d-block mt-2">Foto atual</small>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <div class="mb-3">
+                                        <label for="profile_image" class="form-label">
+                                            {% if about and about.profile_image %}Nova Foto{% else %}Foto de Perfil{% endif %}
+                                        </label>
+                                        <input type="file" class="form-control" id="profile_image" name="profile_image" 
+                                               accept="image/*">
+                                        <div class="form-text">Recomendado: imagem quadrada, mínimo 300x300px</div>
+                                    </div>
+                                </div>
+
+                                <!-- Preview Card -->
+                                <div class="mb-4">
+                                    <h5 class="mb-3">Preview</h5>
+                                    <div class="card bg-light">
+                                        <div class="card-body text-center">
+                                            <div class="profile-preview mb-3">
+                                                {% if about and about.profile_image %}
+                                                    <img src="{{ about.profile_image }}" alt="Preview" 
+                                                         class="rounded-circle" width="80" height="80" 
+                                                         style="object-fit: cover;" id="profile-preview">
+                                                {% else %}
+                                                    <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center mx-auto" 
+                                                         style="width: 80px; height: 80px;" id="profile-preview">
+                                                        <i class="fas fa-user text-white fa-2x"></i>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            <h6 class="mb-1">Rafaela de Oliveira Botelho</h6>
+                                            <small class="text-muted">Desenvolvedora de Sistemas</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Quick Stats -->
+                                <div class="mb-4">
+                                    <h5 class="mb-3">Estatísticas da Página</h5>
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <small class="text-muted">Última atualização:</small>
+                                            <div class="fw-bold">
+                                                {% if about and about.updated_at %}
+                                                    {{ about.updated_at.strftime('%d/%m/%Y às %H:%M') }}
+                                                {% else %}
+                                                    Nunca
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="row">
+                            <div class="col-12">
+                                <hr class="my-4">
+                                <div class="d-flex justify-content-between">
+                                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-arrow-left me-2"></i>Voltar ao Dashboard
+                                    </a>
+                                    <div>
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="fas fa-save me-2"></i>Salvar Informações
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Preview profile image upload
+document.getElementById('profile_image').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('profile-preview');
+            preview.innerHTML = `<img src="${e.target.result}" alt="Preview" 
+                                     class="rounded-circle" width="80" height="80" 
+                                     style="object-fit: cover;">`;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Auto-save draft (optional feature)
+let autoSaveTimer;
+const formInputs = document.querySelectorAll('input, textarea');
+
+formInputs.forEach(input => {
+    input.addEventListener('input', function() {
+        clearTimeout(autoSaveTimer);
+        autoSaveTimer = setTimeout(() => {
+            console.log('Auto-saving draft...');
+            // Here you could implement auto-save functionality
+        }, 5000);
+    });
+});
+</script>
+{% endblock %}
