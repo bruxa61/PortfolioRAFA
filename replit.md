@@ -74,5 +74,13 @@ Preferred communication style: Simple, everyday language.
 
 ## Environment Configuration
 - **SESSION_SECRET**: Flask session encryption key
-- **DATABASE_URL**: PostgreSQL connection string
+- **DATABASE_URL**: PostgreSQL connection string (Railway compatible)
 - **UPLOAD_FOLDER**: File upload directory path
+- **PORT**: Application port (Railway managed)
+
+## Deployment Configuration
+- **Railway Ready**: Procfile, railway.json, nixpacks.toml configured
+- **Database Reset**: All tables cleared for fresh deployment
+- **Health Check**: /health endpoint for Railway monitoring
+- **Auto-Admin**: All authenticated users have admin access
+- **PostgreSQL Compatibility**: URL rewriting for Railway PostgreSQL

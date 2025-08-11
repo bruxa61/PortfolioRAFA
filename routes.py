@@ -471,6 +471,15 @@ def admin_simple_project_delete(project_id):
     
     return redirect(url_for('admin_simple_projects'))
 
+# Health check for Railway deployment
+@app.route('/health')
+def health_check():
+    return jsonify({
+        'status': 'healthy',
+        'message': 'Portfolio application is running',
+        'database': 'connected' if db.engine else 'disconnected'
+    })
+
 # Debug route to check admin status
 @app.route('/debug/user')
 def debug_user():
