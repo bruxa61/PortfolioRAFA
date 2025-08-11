@@ -574,6 +574,64 @@ h1, h2, h3, h4, h5, h6 {
     border-image-slice: 1;
 }
 
+/* Error page styles */
+.error-page {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+}
+
+.error-code {
+    font-size: 8rem;
+    font-weight: 900;
+    color: var(--primary-color);
+    line-height: 1;
+}
+
+.error-title {
+    color: var(--text-dark);
+    margin: 1rem 0;
+}
+
+.error-description {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    margin-bottom: 2rem;
+}
+
+.error-actions .btn {
+    margin: 0 0.5rem;
+}
+
+/* Simple projects page styles */
+.project-card .card-footer {
+    background-color: rgba(0,0,0,0.02);
+    border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.project-card .btn {
+    transition: all 0.2s ease;
+}
+
+.project-card .btn:hover {
+    transform: scale(1.1);
+}
+
+/* Modal improvements */
+.modal-dialog {
+    margin-top: 2rem;
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.form-text {
+    font-size: 0.875rem;
+    color: var(--text-light);
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;

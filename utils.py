@@ -19,12 +19,11 @@ def create_slug(text):
 
 def create_notification(title, message, notification_type='general', related_project_id=None, related_user_id=None):
     """Create a new notification"""
-    notification = Notification(
-        title=title,
-        message=message,
-        notification_type=notification_type,
-        related_project_id=related_project_id,
-        related_user_id=related_user_id
-    )
+    notification = Notification()
+    notification.title = title
+    notification.message = message
+    notification.notification_type = notification_type
+    notification.related_project_id = related_project_id
+    notification.related_user_id = related_user_id
     db.session.add(notification)
     return notification

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Página não encontrada - Rafaela Botelho{% endblock %}
+
+{% block content %}
+<div class="error-page">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+                <div class="error-content">
+                    <div class="error-code">404</div>
+                    <h1 class="error-title">Página não encontrada</h1>
+                    <p class="error-description">
+                        A página que você está procurando não existe ou foi movida.
+                    </p>
+                    <div class="error-actions">
+                        <a href="{{ url_for('index') }}" class="btn btn-primary">
+                            <i class="fas fa-home"></i> Voltar ao início
+                        </a>
+                        <a href="{{ url_for('projects') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-folder"></i> Ver projetos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

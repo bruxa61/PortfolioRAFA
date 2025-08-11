@@ -73,15 +73,14 @@ def about():
     about = AboutPage.query.first()
     if not about:
         # Create default about page
-        about = AboutPage(
-            title="Sobre Mim",
-            content="Apaixonada por tecnologia e formada em Análise e Desenvolvimento de Sistemas pelo SENAI 'Morvan Figueiredo'",
-            contact_email="rafaelaolbo@gmail.com",
-            linkedin_url="https://www.linkedin.com/in/rafaela-botelho-76a4a72b0/",
-            github_url="https://github.com/bruxa61",
-            instagram_url="https://www.instagram.com/r.afita_/",
-            whatsapp_url="https://wa.me/5511986261266"
-        )
+        about = AboutPage()
+        about.title = "Sobre Mim"
+        about.content = "Apaixonada por tecnologia e formada em Análise e Desenvolvimento de Sistemas pelo SENAI 'Morvan Figueiredo'"
+        about.contact_email = "rafaelaolbo@gmail.com"
+        about.linkedin_url = "https://www.linkedin.com/in/rafaela-botelho-76a4a72b0/"
+        about.github_url = "https://github.com/bruxa61"
+        about.instagram_url = "https://www.instagram.com/r.afita_/"
+        about.whatsapp_url = "https://wa.me/5511986261266"
         db.session.add(about)
         db.session.commit()
     
@@ -107,7 +106,9 @@ def toggle_like(project_id):
         liked = False
     else:
         # Like
-        like = Like(user_id=current_user.id, project_id=project_id)
+        like = Like()
+        like.user_id = current_user.id
+        like.project_id = project_id
         db.session.add(like)
         project.likes_count += 1
         liked = True
@@ -140,11 +141,10 @@ def add_comment(project_id):
         flash('O comentário não pode estar vazio.', 'error')
         return redirect(url_for('project_detail', slug=project.slug))
     
-    comment = Comment(
-        user_id=current_user.id,
-        project_id=project_id,
-        content=content
-    )
+    comment = Comment()
+    comment.user_id = current_user.id
+    comment.project_id = project_id
+    comment.content = content
     
     db.session.add(comment)
     project.comments_count += 1
@@ -352,6 +352,124 @@ def mark_notification_read(notification_id):
     db.session.commit()
     
     return jsonify({'success': True})
+
+# ==========================================
+# SIMPLE PROJECT MANAGEMENT ROUTES
+# ==========================================
+
+@app.route('/admin/projetos/simples')
+@require_admin
+def admin_simple_projects():
+    page = request.args.get('page', 1, type=int)
+    projects = Project.query.order_by(desc(Project.created_at)).paginate(
+        page=page, per_page=12, error_out=False
+    )
+    return render_template('admin/simple_projects.html', projects=projects)
+
+@app.route('/admin/projetos/simples/criar', methods=['POST'])
+@require_admin
+def admin_simple_project_create():
+    title = request.form.get('title', '').strip()
+    description = request.form.get('description', '').strip()
+    github_url = request.form.get('github_url', '').strip()
+    is_published = 'is_published' in request.form
+    
+    if not title or not description:
+        flash('Título e descrição são obrigatórios.', 'error')
+        return redirect(url_for('admin_simple_projects'))
+    
+    # Create new project
+    project = Project()
+    project.title = title
+    project.description = description
+    project.github_url = github_url if github_url else None
+    project.is_published = is_published
+    project.slug = create_slug(title)
+    
+    # Handle image upload
+    if 'image' in request.files:
+        file = request.files['image']
+        if file and file.filename and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filename = f"project_{uuid.uuid4().hex}_{filename}"
+            file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+            
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            file.save(file_path)
+            
+            project.image_url = f"/static/uploads/{filename}"
+    
+    try:
+        db.session.add(project)
+        db.session.commit()
+        flash(f'Projeto "{title}" criado com sucesso!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('Erro ao criar projeto. Tente novamente.', 'error')
+    
+    return redirect(url_for('admin_simple_projects'))
+
+@app.route('/admin/projetos/simples/<int:project_id>/editar', methods=['POST'])
+@require_admin
+def admin_simple_project_edit(project_id):
+    project = Project.query.get_or_404(project_id)
+    
+    title = request.form.get('title', '').strip()
+    description = request.form.get('description', '').strip()
+    github_url = request.form.get('github_url', '').strip()
+    is_published = 'is_published' in request.form
+    
+    if not title or not description:
+        flash('Título e descrição são obrigatórios.', 'error')
+        return redirect(url_for('admin_simple_projects'))
+    
+    # Update project
+    project.title = title
+    project.description = description
+    project.github_url = github_url if github_url else None
+    project.is_published = is_published
+    
+    # Update slug if title changed
+    if title != project.title:
+        project.slug = create_slug(title)
+    
+    # Handle new image upload
+    if 'image' in request.files:
+        file = request.files['image']
+        if file and file.filename and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filename = f"project_{uuid.uuid4().hex}_{filename}"
+            file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+            
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            file.save(file_path)
+            
+            project.image_url = f"/static/uploads/{filename}"
+    
+    try:
+        db.session.commit()
+        flash(f'Projeto "{title}" atualizado com sucesso!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('Erro ao atualizar projeto. Tente novamente.', 'error')
+    
+    return redirect(url_for('admin_simple_projects'))
+
+@app.route('/admin/projetos/simples/<int:project_id>/excluir', methods=['POST'])
+@require_admin
+def admin_simple_project_delete(project_id):
+    project = Project.query.get_or_404(project_id)
+    project_title = project.title
+    
+    try:
+        db.session.delete(project)
+        db.session.commit()
+        flash(f'Projeto "{project_title}" excluído com sucesso!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('Erro ao excluir projeto. Tente novamente.', 'error')
+    
+    return redirect(url_for('admin_simple_projects'))
 
 # Error handlers
 @app.errorhandler(404)
